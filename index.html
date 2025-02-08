@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Surprise 💖</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+
+    <style>
+             /* Keep your existing body style as is. We are not overriding it here. */
+        
+        /* Envelope container (replaces .letter-image) */
+        .envelope-container {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 200px;
+          height: 200px;
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+        }
+        
+        /* The main envelope (replaces .animated-mail) */
+        .envelope {
+          position: absolute;
+          height: 150px;
+          /* width: 200px; */
+          transition: 0.4s;
+        }
+        
+        /* Front portion: replaces .top-fold */
+        .envelope-front {
+          position: absolute;
+          top: 50px;
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 50px 100px 0 100px;
+          border-color: #cf4a43 transparent transparent transparent;
+          transform-origin: 50% 0%;
+          transition: transform 0.4s 0.4s, z-index 0.2s 0.4s;
+          z-index: 2;
+        }
+        
+        /* Main body: replaces .body */
+        .envelope-body {
+          position: absolute;
+          bottom: 0;
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 0 0 100px 200px;
+          border-color: transparent transparent #e95f55 transparent;
+          z-index: 2;
+        }
+        
+        /* Back fold: replaces .back-fold */
+        .envelope-backfold {
+          position: absolute;
+          bottom: 0;
+          width: 200px;
+          height: 100px;
+          background: #cf4a43;
+          z-index: 0;
+        }
+        
+        /* Left fold: replaces .left-fold */
+        .envelope-leftfold {
+          position: absolute;
+          bottom: 0;
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 50px 0 50px 100px;
+          border-color: transparent transparent transparent #e15349;
+          z-index: 2;
+        }
+        
+        /* Inner letter: replaces .letter */
+        .envelope-letter {
+          position: absolute;
+          left: 20px;
+          bottom: 0px;
+          width: 160px;
+          height: 60px;
+          background: #fff;
+          z-index: 1;
+          overflow: hidden;
+          transition: 0.4s 0.2s;
+        }
+        
+        /* Decorative stripes: replaces .letter-border */
+        .envelope-letter-border {
+          height: 10px;
+          width: 100%;
+          background: repeating-linear-gradient(
+            -45deg,
+            #cb5a5e,
+            #cb5a5e 8px,
+            transparent 8px,
+            transparent 18px
+          );
+        }
+        
+        /* Sample letter content: replaces .letter-title & .letter-context */
+        .envelope-letter-title {
+          margin-top: 10px;
+          margin-left: 5px;
+          height: 10px;
+          width: 40%;
+          background: #cb5a5e;
+        }
+        .envelope-letter-context {
+          margin-top: 10px;
+          margin-left: 5px;
+          height: 10px;
+          width: 20%;
+          background: #cb5a5e;
+        }
+        
+        /* Stamp: replaces .letter-stamp */
+        .envelope-letter-stamp {
+          margin-top: 30px;
+          margin-left: 120px;
+          border-radius: 100%;
+          height: 30px;
+          width: 30px;
+          background: #cb5a5e;
+          opacity: 0.3;
+        }
+        
+        /* Optional hover “shadow”: replaces .shadow */
+        .envelope-shadow {
+          position: absolute;
+          top: 200px;
+          left: 50%;
+          width: 400px;
+          height: 30px;
+          transform: translateX(-50%);
+          transition: 0.4s;
+          border-radius: 100%;
+          background: radial-gradient(rgba(0, 0, 0, 0.5), transparent, transparent);
+        }
+        
+        /* Hover behavior: lift and open the envelope */
+        .envelope-container:hover .envelope {
+          transform: translateY(50px);
+        }
+        .envelope-container:hover .envelope-front {
+          transition: transform 0.4s, z-index 0.2s;
+          transform: rotateX(180deg);
+          z-index: 0;
+        }
+        .envelope-container:hover .envelope-letter {
+          height: 180px;
+        }
+        .envelope-container:hover .envelope-shadow {
+          width: 250px;
+        }
+
+        /* Tree Timeline */
+        .tree-timeline {
+            position: relative;
+            margin: 5rem auto;
+            max-width: 800px;
+            padding: 40px 0;
+            display: none; /* Initially hidden */
+        }
+
+        .tree-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: #ff4d6d;
+            transform: translateX(-50%);
+        }
+/* Replace the existing .timeline-item style with: */
+.timeline-item {
+  position: relative;
+  width: 45%;
+  padding: 20px;
+  margin: 40px 0;
+  background: rgba(255, 255, 255, 0.1); /* translucent background */
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+}
+
+        .timeline-item:nth-child(odd) {
+            left: 5%;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+     /* Adjust the timeline connector if needed */
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  width: 20px;
+  height: 20px;
+  background: #ff4d6d;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255,77,109,0.5);
+}
+.timeline-date {
+  position: absolute;
+  top: 20px;
+  font-size: 0.8rem;
+  color: #ff4d6d;
+  background: #fff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+/* For timeline items on the left side (odd) position date to the right */
+.timeline-item:nth-child(odd) .timeline-date {
+  right: -180px;
+}
+
+/* For timeline items on the right side (even) position date to the left */
+.timeline-item:nth-child(even) .timeline-date {
+  left: -180px;
+}
+        .timeline-item:nth-child(odd)::after {
+            right: -55px;
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -55px;
+        }
+
+        .timeline-item img {
+            width: 100%;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Existing styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #ff99cc;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff4d6d;
+            animation: float 6s linear infinite;
+            opacity: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            text-align: center;
+            color: #590d22;
+            display: none;
+            opacity: 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 2rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        #yesBtn {
+            background: #ff4d6d;
+            color: white;
+        }
+
+        #noBtn {
+            background: #590d22;
+            color: white;
+            position: relative;
+        }
+
+        #message {
+            display: none;
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            animation: heartBeat 1s infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(1); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes floatEnvelope {
+            0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+            50% { transform: translate(-50%, -55%) rotate(5deg); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            button { padding: 12px 24px; }
+            .envelope { width: 200px; height: 140px; }
+            .envelope-message { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Envelope -->
+       <div class="envelope-container">
+      <div class="envelope">
+        <!-- Main envelope body (triangle) -->
+        <div class="envelope-body"></div>
+        
+        <!-- Left fold -->
+        <div class="envelope-leftfold"></div>
+    
+        <!-- Back fold -->
+        <div class="envelope-backfold"></div>
+    
+        <!-- Original front flap -->
+        <div class="envelope-front"></div>
+    
+        <!-- Inner letter section -->
+        <div class="envelope-letter">
+          <div class="letter-content" style="padding: 16px; font-size: 1.2rem; line-height: 1.6; text-align: center; font-family: 'Dancing Script', cursive;">
+            <span style="color: #ff4d6d; font-weight: bold;">Une invitation pour</span><br>
+            💖GRACY💖<br>
+        </div>
+          <div class="envelope-letter-border"></div>
+          <div class="envelope-letter-title"></div>
+          <div class="envelope-letter-context"></div>
+          <div class="envelope-letter-stamp"></div>
+           <!-- Add your text here -->
+
+        </div>
+    
+        <!-- If you don’t need this anymore, remove or rename it -->
+        <div class="envelope-back"></div>
+    
+        <!-- Keep your original message text here -->
+        <div class="envelope-message"></div>
+      </div>
+    
+      <!-- Optional shadow element -->
+      <div class="envelope-shadow"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="hearts" id="hearts"></div>
+        <h1>💖 Will You Be My Valentine? 💖</h1>
+        <div class="buttons">
+            <button id="yesBtn">YES! 💝</button>
+            <button id="noBtn">No 😢</button>
+        </div>
+        <div id="message">I love you to the moon and back! 🌙💖</div>
+        <div class="tree-timeline">
+            <div class="timeline-item" data-aos="fade-up"
+            data-sound="sound.mp3"
+            data-message="Le jour où nos âmes se sont croisées ✨💫
+
+            C’était un jour comme un autre, ou presque,
+            Un souffle léger portait l’écho d’un geste,
+            Quand mon regard a rencontré le tien,
+            Le monde entier s’est tu… plus rien.
+            
+            Les secondes dansaient, timides et sincères,
+            Un frisson discret effleurait l’air,
+            Je ne savais pas que ce moment,
+            Serait le début d’un doux tourment.
+            
+            Tu as souri, et sans le vouloir,
+            Mon cœur a choisi de te voir,
+            Pas juste un instant, pas juste un détour,
+            Mais à chaque battement, à chaque jour.
+            
+            Depuis, ton nom rime avec lumière,
+            Ton rire efface l’ombre d’hier,
+            Et ce jour-là, gravé en mon cœur,
+            Reste l’aube d’un tendre bonheur.
+            
+            💕✨" 
+            data-images="timeline-1-1.jpg; timeline-1-2.jpg; timeline-1-3.jpg; timeline-1-4.jpg; timeline-1-5.jpg"
+            >
+                <h3>Notre Première Rencontre 💑</h3>
+                <span class="timeline-date">Juin 2023</span>
+
+                <img src="timeline-1-4.jpg" alt="First Meet">
+                <p>Lorsque les étoiles se sont alignés ✨</p>
+            </div>
+            <div class="timeline-item" data-aos="fade-up"
+            data-sound="sound1.mp3"
+            data-message="Notre première date, un frisson inoubliable ✨❤️
+
+            Ce jour-là, mon cœur battait plus fort que jamais. Chaque pas vers toi me semblait à la fois excitant et effrayant. J’étais nerveux, peut-être trop. Mes mains moites trahissaient mon impatience, et mon esprit s’embrouillait de mille scénarios.
+            
+            Puis, je t’ai vue. 💫
+            
+            Tu étais là, plus belle que dans mes souvenirs, plus lumineuse que je n’aurais pu l’imaginer. Tout autour de nous semblait disparaître, comme si le monde s’effaçait pour ne laisser place qu’à toi et moi.
+            
+            On a marché, on a parlé, on a ri… mais je sentais cette tension douce, cette attente suspendue entre nous. Mes yeux cherchaient les tiens, et à chaque regard échangé, mon cœur se serrait un peu plus fort.
+            
+            Puis, il y a eu ce moment. Ce moment où nos voix se sont tues, où le silence n’était plus gênant, mais vibrant. J’ai osé m’approcher, hésitant, redoutant et espérant à la fois.
+            
+            Et puis… nos lèvres se sont effleurées.
+            
+            Un frisson, un incendie, une explosion douce et infinie. Tout mon être s’est laissé emporter dans ce premier baiser, un mélange d’émotion pure et d’adrénaline. J’avais rêvé de cet instant, mais rien n’aurait pu me préparer à ce qu’il allait être : un instant hors du temps, suspendu entre l’excitation et la tendresse.
+            
+            C’était notre première date, et ce jour-là, j’ai su que je ne voulais plus être ailleurs qu’avec toi. 💖"
+            data-images="timeline-2-1.jpg; timeline-2-2.jpg; timeline-2-3.jpg; timeline-2-4.jpg; timeline-2-5.jpg"
+            >
+                <h3>Notre Première Date 🌸</h3>
+                <span class="timeline-date">Décembre 2023</span>
+
+                <img src="timeline-2-4.jpg" alt="First Date">
+                <p>Papillions et nervosité pour moi 🦋</p>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-up"
+            data-sound="sound2.mp3"
+            data-message="Nos plus beaux moments ✨❤️
+
+            🌊 À la plage, le bruit des vagues, le sable chaud et ton rire éclatant. Nos doigts qui s’effleurent timidement, un frisson doux comme la brise marine.
+            
+            🏊‍♂️ À la piscine, nos éclats de rire, les éclaboussures et ces étreintes sous l’eau, comme si le monde n’existait plus autour de nous.
+            
+            🎁 Mon premier cadeau pour toi, la peur que ça ne te plaise pas, puis ton sourire, tes yeux brillants… C’est là que j’ai su que ton bonheur était mon plus beau cadeau.
+            
+            💔 Notre première dispute, la douleur de se blesser sans le vouloir… Mais au fond, même dans la colère, il y avait cette évidence : on ne voulait pas se perdre.
+            
+            🌙 Et tous ces petits instants, les appels tardifs, les fous rires, les je t’aime murmurés… Des souvenirs gravés en nous, témoins de tout ce qu’on a construit. ❤️"
+            data-images="timeline-3-1.jpg; timeline-3-2.jpg; timeline-3-3.jpg; timeline-3-4.jpg; timeline-3-5.jpg"
+            >
+                <h3>Nos meilleurs moments 😊</h3>
+                <span class="timeline-date">2024</span>
+                <img src="timeline-3-4.jpg" alt="Your Smile">
+                <p>Mon rayon de soleil journalier ☀️</p>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-up"
+            data-sound="sound3.mp3"
+            data-message="Notre séparation… 💔😞
+
+            Il y a eu ce jour où tout a basculé… Où nos cœurs ont tremblé sous le poids des larmes et des regrets. Ce n’était pas un simple adieu, mais une déchirure, une tempête qui a emporté nos certitudes.
+            
+            On a pleuré, toi et moi, comme si le monde s’effondrait. Chaque mot faisait mal, chaque silence était un cri étouffé. On s’aimait encore, mais quelque chose nous échappait…
+            
+            Les nuits étaient longues, remplies d’absence et de souvenirs. Ton nom résonnait dans mon esprit, comme une mélodie inachevée. Et pourtant, malgré la douleur, malgré la distance, nos âmes se cherchaient encore…
+            
+            Ce n’était pas la fin, juste une épreuve, un chapitre douloureux dans notre histoire. Une épreuve qui, peut-être, nous a rendus plus forts… ❤️"
+            data-images="timeline-4-1.jpg; timeline-4-2.jpg; timeline-4-3.jpg; timeline-4-4.jpg; timeline-4-5.jpg"
+            >
+                <h3>Notre séparation 😢</h3>
+                <span class="timeline-date">Décembre 2024</span>
+
+                <img src="timeline-4-4.jpg" alt="Your Smile">
+                <p>L'orage qui a caché la lumière 😢</p>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-up"
+            data-sound="sound4.mp3"
+            data-message="Notre réconciliation… Un nouveau départ ❤️✨
+
+            Après la tempête, il y a eu ce moment… Ce regard échangé, cette étreinte qui effaçait la douleur. Nos cœurs battant à l’unisson, plus forts que jamais.
+            
+            On s’est parlé, sans masque, sans peur. Les mots étaient sincères, remplis de promesses et d’amour. On s’est promis que plus rien ne nous séparerait, que cette fois, on avancerait ensemble, main dans la main.
+            
+            C’était un nouveau départ, une page blanche à écrire à deux. Plus solides, plus complices, plus amoureux que jamais. Et dans tes bras, j’ai su… C’est toi, depuis toujours, pour toujours. ❤️✨"
+            data-images="timeline-5-1.jpg; timeline-5-2.jpg; timeline-5-3.jpg; timeline-5-4.jpg; timeline-5-5.jpg"
+            >
+                <h3>Notre réconciliation 💕</h3>
+                <span class="timeline-date">Décembre 2024</span>
+                <img src="timeline-5-2.jpg" alt="Your Smile">
+                <p>Le cauchemar s'est terminé 💫</p>
+            </div>
+
+            <div class="timeline-item" data-aos="fade-up"
+            data-sound="sound5.mp3"
+            data-message="Notre avenir et au-delà… 💍✨👶🏡
+
+            Un jour, je te verrai avancer vers moi, vêtue de blanc, plus belle que jamais. Nos regards se croiseront, et à cet instant, tout le passé, tous les doutes, toutes les épreuves n’auront plus d’importance. Il n’y aura que nous, une promesse échangée, un oui gravé à jamais. 💖
+            
+            Puis, viendra le doux chaos de notre foyer, nos rires résonnant dans chaque pièce, des petites mains accrochées aux nôtres, des voix innocentes nous appelant papa et maman. Nos journées seront rythmées par l’amour, les bêtises et les câlins volés entre deux nuits écourtées. 🏡👶
+            
+            Et bien plus tard, quand nos cheveux auront pris la couleur du temps, je voudrai toujours t’aimer comme au premier jour. Vieillir à tes côtés, main dans la main, regardant le soleil se coucher sur tout ce que nous aurons construit ensemble. 🌅❤️
+            
+            Toi et moi, maintenant et pour toujours… ✨💕
+            
+            Voici tout les cadeaux que j'ai préparé pour toi 
+
+            JE T'AIME MA 💖GRACY💖
+            "
+            data-images="timeline-6-1.jpg; timeline-6-2.jpg; timeline-6-3.jpg; timeline-6-4.jpg; timeline-6-5.jpg"
+            >
+                <h3>Notre Future ✨</h3>
+                <span class="timeline-date">2025...</span>
+                <img src="timeline-6-5.jpg" alt="Your Smile">
+                <p>Celle que j'ai toujours attendu 💖</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="valentineAudio">
+        <source src="sounda.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+
+// Unlock audio on first genuine user click
+document.addEventListener('click', function unlockAudio() {
+  envelope.audio.play().then(() => {
+    envelope.audio.pause();
+    console.log('Audio unlocked');
+  }).catch(err => console.log("Audio unlock failed:", err));
+  document.removeEventListener('click', unlockAudio);
+});
+
+
+/// Envelope hover animation with stars and sound
+const envelope = document.querySelector('.envelope');
+const envelopeFront = document.querySelector('.envelope-front');
+
+// Create a reusable audio object for stars (update the path as needed)
+if (!envelope.audio) {
+  envelope.audio = new Audio('intro.mp3'); // Update with your sound file path
+  envelope.audio.loop = true;
+}
+
+// ...existing code...
+
+envelope.addEventListener('mouseenter', () => {
+  // Animate envelope movement and shadow
+  gsap.to(envelope, {
+    y: -10,
+    rotation: 5,
+    duration: 0.5,
+    ease: "power2.out",
+    boxShadow: "0 15px 30px rgba(255, 77, 109, 0.3)"
+  });
+  gsap.to(envelopeFront, {
+    rotateX: 15,
+    duration: 0.5,
+    ease: "power2.out"
+  });
+  
+  // Create star container for background stars
+  const starContainer = document.createElement('div');
+  starContainer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to bottom, #020024 0%, #090979 50%, #00d4ff 100%);
+    pointer-events: none;
+    z-index: -1;
+  `;
+  document.body.appendChild(starContainer);
+  
+  // Create multiple stars that "rain" down
+  for (let i = 0; i < 30; i++) {
+    const star = document.createElement('div');
+    star.textContent = '⭐';
+    const startLeft = Math.random() * 100;
+    const startTop = -Math.random() * 20;
+    star.style.cssText = `
+      position: absolute;
+      left: ${startLeft}vw;
+      top: ${startTop}vh;
+      font-size: ${Math.random() * 1.5 + 0.5}rem;
+      opacity: 1;
+      color: white;
+    `;
+    starContainer.appendChild(star);
+    
+    const fallDuration = 2 + Math.random() * 3;
+    const delay = Math.random() * 2;
+    gsap.to(star, {
+      y: "110vh",
+      ease: "linear",
+      duration: fallDuration,
+      repeat: -1,
+      delay: delay,
+      onUpdate: function() {
+        // Throttle trail creation: only create a streak every 50ms
+        const now = Date.now();
+        if (!star.lastTrail || now - star.lastTrail > 50) {
+          star.lastTrail = now;
+          const trail = document.createElement('div');
+          // Use a thin rectangle with a blue gradient for a streak
+          const rect = star.getBoundingClientRect();
+          trail.style.cssText = `
+            position: absolute;
+            left: ${rect.left + rect.width / 2 - 1}px;
+            top: ${rect.top + rect.height / 2}px;
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, rgba(0,0,255,1), rgba(0,0,255,0));
+            pointer-events: none;
+            opacity: 0.8;
+            mix-blend-mode: screen;
+          `;
+          starContainer.appendChild(trail);
+          // Fade out & remove the streak
+          gsap.to(trail, {
+            opacity: 0,
+            duration: 0.5,
+            ease: "linear",
+            onComplete: () => trail.remove()
+          });
+        }
+      },
+      onRepeat: () => {
+        // Reset star position and style for variety
+        star.style.left = Math.random() * 100 + "vw";
+        star.style.fontSize = (Math.random() * 1.5 + 0.5) + "rem";
+        star.style.opacity = 1;
+      }
+    });
+  }
+  
+  // Save container reference & play audio
+  envelope.starContainer = starContainer;
+  envelope.audio.play().catch(err => console.log("Audio play failed:", err));
+});
+
+// ...existing code...
+
+envelope.addEventListener('mouseleave', () => {
+  gsap.to(envelope, {
+    y: 0,
+    rotation: 0,
+    duration: 0.5,
+    ease: "power2.inOut",
+    boxShadow: "0 10px 30px rgba(255, 77, 109, 0.1)"
+  });
+  gsap.to(envelopeFront, {
+    rotateX: 0,
+    duration: 0.5,
+    ease: "power2.inOut"
+  });
+  
+  // Remove the stars by fading out the container
+  if (envelope.starContainer) {
+    gsap.to(envelope.starContainer, {
+      opacity: 0,
+      duration: 0.5,
+      onComplete: () => {
+        envelope.starContainer.remove();
+        envelope.starContainer = null;
+      }
+    });
+  }
+  
+  // Pause the stars sound
+  if (envelope.audio) {
+    envelope.audio.pause();
+  }
+});
+document.querySelectorAll('.timeline-item').forEach(item => {
+  item.addEventListener('mouseenter', () => {
+    // Get all images from the data-images attribute
+    const images = item.dataset.images
+      ? item.dataset.images.split(';').map(src => src.trim())
+      : [];
+      
+    if (images.length > 0) {
+      // Create a flashback overlay container covering the entire viewport
+      const flashbackOverlay = document.createElement('div');
+      flashbackOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        /* Removed pointer-events: none so children can receive hover events */
+      `;
+      document.body.appendChild(flashbackOverlay);
+      
+      // Create an image element for each image with hover (zoom) effects
+      const imageElements = images.map(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0;
+          pointer-events: auto; /* Enable pointer events on the image */
+          transition: transform 0.3s ease;
+        `;
+        flashbackOverlay.appendChild(img);
+        
+        // Add hover effect: zoom in on mouseenter, scale back on mouseleave
+        img.addEventListener('mouseenter', () => {
+          gsap.to(img, { scale: 1.1, duration: 0.3, ease: "power2.out" });
+        });
+        img.addEventListener('mouseleave', () => {
+          gsap.to(img, { scale: 1, duration: 0.3, ease: "power2.inOut" });
+        });
+        
+        return img;
+      });
+      
+      // Create a GSAP timeline that cycles through each image
+      let flashbackTl = gsap.timeline({ repeat: -1 });
+      imageElements.forEach(imgEl => {
+        flashbackTl.to(imgEl, {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.out"
+        }).to(imgEl, {
+          opacity: 0,
+          duration: 0.5,
+          delay: 1.0,
+          ease: "power2.inOut"
+        });
+      });
+      
+      // Save references for removal on mouseleave
+      item.flashbackTimeline = flashbackTl;
+      item.flashbackOverlay = flashbackOverlay;
+    }
+    
+    // Check for a sound in data-sound and play or resume it
+    const soundSrc = item.dataset.sound ? item.dataset.sound.trim() : null;
+    if (soundSrc) {
+      if (item.flashbackAudio) {
+        item.flashbackAudio.play().catch(error => {
+          console.log("Audio play failed:", error);
+        });
+      } else {
+        item.flashbackAudio = new Audio(soundSrc);
+        item.flashbackAudio.play().catch(error => {
+          console.log("Audio play failed:", error);
+        });
+      }
+    }
+    
+    // --- Added Heart Particle Effect ---
+    const heartsParticles = document.createElement('div');
+    heartsParticles.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -2;
+    `;
+    document.body.appendChild(heartsParticles);
+    
+    for (let i = 0; i < 20; i++) {
+      const heart = document.createElement('div');
+      heart.textContent = '💖';
+      heart.style.position = 'absolute';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.top = Math.random() * 100 + 'vh';
+      heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+      heartsParticles.appendChild(heart);
+      
+      gsap.to(heart, {
+        y: -100 - Math.random() * 200,
+        opacity: 0,
+        duration: 2,
+        ease: "power2.out",
+        onComplete: () => heart.remove()
+      });
+    }
+    
+    item.heartsParticles = heartsParticles;
+  });
+  
+  item.addEventListener('mouseleave', () => {
+    if (item.flashbackTimeline) {
+      item.flashbackTimeline.kill();
+      item.flashbackTimeline = null;
+    }
+    if (item.flashbackOverlay) {
+      gsap.to(item.flashbackOverlay, {
+        opacity: 0,
+        duration: 0.5,
+        onComplete: () => item.flashbackOverlay.remove()
+      });
+      item.flashbackOverlay = null;
+    }
+    
+    // Only pause the audio if there is no open overlay
+    if (!item.overlayOpen && item.flashbackAudio) {
+      item.flashbackAudio.pause();
+    }
+    
+    if (item.heartsParticles) {
+      gsap.to(item.heartsParticles, {
+        opacity: 0,
+        duration: 0.5,
+        onComplete: () => {
+          item.heartsParticles.remove();
+          item.heartsParticles = null;
+        }
+      });
+    }
+  });
+});
+  document.querySelectorAll('.timeline-item').forEach(item => {
+    item.addEventListener('click', () => {
+      // Set flag so that mouseleave doesn't auto-pause the audio
+      item.overlayOpen = true;
+      
+      // Create an overlay container that covers the viewport
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      `;
+      
+      // Create a text container for a typewriter message
+      const textContainer = document.createElement('div');
+      textContainer.style.cssText = `
+        color: #fff;
+        font-size: 2rem;
+        margin-bottom: 30px;
+        min-height: 50px;
+      `;
+      overlay.appendChild(textContainer);
+      
+      // Create a container for images
+      const imgContainer = document.createElement('div');
+      imgContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+      `;
+      overlay.appendChild(imgContainer);
+      
+      document.body.appendChild(overlay);
+      
+      // Resume (or start) the timeline item's sound
+      const soundSrc = item.dataset.sound ? item.dataset.sound.trim() : null;
+      if (soundSrc) {
+        if (item.flashbackAudio) {
+          item.flashbackAudio.play().catch(error => {
+            console.log("Audio play failed:", error);
+          });
+        } else {
+          item.flashbackAudio = new Audio(soundSrc);
+          item.flashbackAudio.play().catch(error => {
+            console.log("Audio play failed:", error);
+          });
+        }
+      }
+      
+      // Get custom message and images from data attributes (with fallbacks)
+      const message = item.dataset.message || "You're reliving this memory!";
+      const images = item.dataset.images
+        ? item.dataset.images.split(';')
+        : [
+            "https://via.placeholder.com/150?text=Image+1",
+            "https://via.placeholder.com/150?text=Image+2",
+            "https://via.placeholder.com/150?text=Image+3",
+            "https://via.placeholder.com/150?text=Image+4",
+            "https://via.placeholder.com/150?text=Image+5"
+          ];
+      
+      // Typewriter effect function
+      let index = 0;
+      function typeWriter() {
+        if (index < message.length) {
+          textContainer.innerHTML += message.charAt(index);
+          index++;
+          setTimeout(typeWriter, 50);
+        } else {
+                  // Once text finishes, show images one by one
+          images.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src.trim();
+            img.style.cssText = `
+              opacity: 0;
+              transform: scale(0.8);
+              width: 150px;
+              height: 150px;
+              border-radius: 10px;
+              box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+              cursor: pointer;
+            `;
+            imgContainer.appendChild(img);
+          
+            // Optionally make image clickable to enlarge it
+            img.addEventListener('click', (e) => {
+              e.stopPropagation(); // Prevent closing the main overlay
+              const bigOverlay = document.createElement('div');
+              bigOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 3000;
+                opacity: 0;
+              `;
+              const bigImg = document.createElement('img');
+              bigImg.src = img.src;
+              bigImg.style.cssText = `
+                max-width: 90vw;
+                max-height: 90vh;
+                border-radius: 10px;
+                transform: scale(0.5);
+                opacity: 0;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+              `;
+              bigOverlay.appendChild(bigImg);
+              document.body.appendChild(bigOverlay);
+              
+              gsap.to(bigOverlay, { opacity: 1, duration: 0.3 });
+              gsap.to(bigImg, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" });
+              
+              bigOverlay.addEventListener('click', () => {
+                gsap.to(bigImg, { scale: 0.5, opacity: 0, duration: 0.3 });
+                gsap.to(bigOverlay, { opacity: 0, duration: 0.3, onComplete: () => bigOverlay.remove() });
+              });
+            });
+          });
+          
+          // Animate the images' appearance after they've been appended
+          gsap.to(imgContainer.children, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.5,
+            ease: "power2.out",
+            onComplete: () => {
+              const closeButton = document.createElement('button');
+              closeButton.textContent = "Close";
+              closeButton.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                padding: 10px 15px;
+                font-size: 1rem;
+                background: #ff4d6d;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                z-index: 2100;
+              `;
+              overlay.appendChild(closeButton);
+              
+              closeButton.addEventListener('click', () => {
+                // Clear overlay flag and pause the audio when closing
+                item.overlayOpen = false;
+                if (item.flashbackAudio) {
+                  item.flashbackAudio.pause();
+                }
+                gsap.to(overlay, {
+                  opacity: 0,
+                  duration: 0.5,
+                  onComplete: () => overlay.remove()
+                });
+              });
+            }
+          });
+        }
+      }
+      typeWriter();
+    });
+  });
+
+
+         VanillaTilt.init(document.querySelectorAll(".timeline-item"), {
+    max: 15,
+    speed: 300,
+    glare: true,
+    "max-glare": 0.4,
+  });
+
+      document.querySelector('.envelope-container').addEventListener('click', () => {
+         // Stop/pause and reset envelope audio
+  if (envelope.audio) {
+    envelope.audio.pause();
+    envelope.audio.currentTime = 0;
+  }
+  
+        const envelopeContainer = document.querySelector('.envelope-container');
+        const envelopeMessage = document.querySelector('.envelope-message');
+        // Store the original envelope message text (if you want to restore it later)
+        const originalText = envelopeMessage.textContent;
+        const tl = gsap.timeline();
+        
+        tl.to('.envelope-front', {
+          rotationX: 180,
+          duration: 1,
+          ease: "elastic.out(1, 0.5)",
+          onStart: () => {
+            // Create sparkle effect (increased count for richer effect)
+            for (let i = 0; i < 30; i++) {
+              const sparkle = document.createElement('div');
+              sparkle.style.cssText = `
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="%23ff4d6d" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>');
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                pointer-events: none;
+              `;
+              document.body.appendChild(sparkle);
+              gsap.to(sparkle, {
+                y: -100 - Math.random() * 50,
+                opacity: 0,
+                duration: 1,
+                ease: "power2.out",
+                onComplete: () => sparkle.remove()
+              });
+            }
+            
+            // Create extra flying hearts emerging from envelope center
+            for (let j = 0; j < 10; j++) {
+              const heart = document.createElement('div');
+              heart.textContent = '💖';
+              heart.style.cssText = `
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                font-size: ${20 + Math.random() * 15}px;
+                opacity: 0;
+                pointer-events: none;
+              `;
+              document.body.appendChild(heart);
+              gsap.to(heart, {
+                x: (Math.random() - 0.5) * 200,
+                y: -150 - Math.random() * 100,
+                rotation: Math.random() * 360,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out",
+                onComplete: () => {
+                  gsap.to(heart, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => heart.remove()
+                  });
+                }
+              });
+            }
+            
+            // Change the envelope message to "Bonjour Gracy" with a fade in then out
+            envelopeMessage.textContent = "Pour Gracy";
+            gsap.fromTo(envelopeMessage, {opacity: 0}, {opacity: 1, duration: 1, ease: "power2.inOut"});
+            gsap.to(envelopeMessage, {opacity: 0, duration: 1, delay: 1, ease: "power2.inOut", onComplete: () => {
+                // Optionally restore the original text
+                envelopeMessage.textContent = originalText;
+            }});
+          }
+        })
+        .to('.envelope-container', {
+          scale: 1.2,
+          duration: 0.3,
+          ease: "back.out(1.7)"
+        })
+        .to('.envelope-container', {
+          scale: 1.5,
+          opacity: 0,
+          duration: 1,
+          ease: "power4.out",
+          onComplete: () => {
+            envelopeContainer.remove();
+            gsap.to('.container', {
+              display: 'block',
+              opacity: 1,
+              duration: 1,
+              onStart: createHearts
+            });
+          }
+        }, "-=0.5")
+        .to('.container', {
+          display: 'block',
+          opacity: 1,
+          duration: 1,
+          onStart: createHearts
+        }, "-=0.5");
+      });
+
+        // Timeline Animation
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+                    document.getElementById('yesBtn').addEventListener('click', () => {
+                // Hide the buttons and show the message
+                document.querySelector('.buttons').style.display = 'none';
+                document.getElementById('message').style.display = 'block';
+              
+                // Create a timeline for a cooler, smoother transition on the timeline container
+                gsap.timeline({ defaults: { duration: 2, ease: "power3.out" } })
+                  .set('.tree-timeline', { 
+                    display: 'block', 
+                    scale: 0.5, 
+                    opacity: 0,
+                    rotation: -20,
+                    y: 50,
+                    filter: "blur(5px)"
+                  })
+                  .to('.tree-timeline', { 
+                    scale: 1, 
+                    opacity: 1,
+                    rotation: 0,
+                    y: 0,
+                    filter: "blur(0px)"
+                  })
+                  .call(() => AOS.refresh());
+              
+                // Play audio
+                const audio = document.getElementById('valentineAudio');
+                audio.play().catch(error => {
+                  console.log('Audio play failed:', error);
+                });
+              });
+
+        // Keep previous JavaScript functions
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 6 + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+
+let noScale = 1;
+let yesScale = 1;
+
+noBtn.addEventListener('click', () => {
+  // Update scales cumulatively
+  noScale *= 0.9;  // shrink noBtn by 10% each time
+  yesScale *= 1.1; // enlarge yesBtn by 10% each time
+
+  // Animate the buttons with the updated scales
+  gsap.to(noBtn, {
+    scale: noScale,
+    duration: 0.3,
+    ease: "power2.inOut"
+  });
+  gsap.to(yesBtn, {
+    scale: yesScale,
+    duration: 0.3,
+    ease: "power2.inOut"
+  });
+  
+  // Reposition noBtn randomly on the screen
+  const maxX = window.innerWidth - noBtn.offsetWidth;
+  const maxY = window.innerHeight - noBtn.offsetHeight;
+  noBtn.style.position = 'absolute';
+  noBtn.style.left = Math.random() * maxX + 'px';
+  noBtn.style.top = Math.random() * maxY + 'px';
+});
+    </script>
+</body>
+</html>
